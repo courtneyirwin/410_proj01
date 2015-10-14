@@ -34,7 +34,12 @@ void sigint_handler(int signo)
     else 
     {
       cout << "Program continues" << endl;
+      if (interval >=  1){
       alarm(interval);
+     }
+   else{
+      ualarm(interval * 1000000, 0);
+    }
     }
   }
 }
