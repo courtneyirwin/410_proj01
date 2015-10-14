@@ -28,6 +28,7 @@ int main(int argc, char** argv) {
               if (interval > MIN_INTERVAL)
               {  
                 kill(target_pid, SIGUSR1); 
+                interval = interval / 2;
               }
               else
               {
@@ -43,6 +44,7 @@ int main(int argc, char** argv) {
               if (interval < MAX_INTERVAL)
               {
                 kill(target_pid, SIGUSR2);
+                interval = interval * 2;
               }
               else
               {
@@ -54,6 +56,7 @@ int main(int argc, char** argv) {
             if (choice == "q" || choice == "Q")
             {
               kill(target_pid, SIGKILL);
+              exit(0);
             }  
         }
         cout << "Terminating the controller." << endl;

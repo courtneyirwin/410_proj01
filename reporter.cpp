@@ -4,11 +4,116 @@
 #include <unistd.h>
 #include <fstream>
 #include <cstdlib>
+#include <sstream>
+#include <cstdio>
+#include <cstring>
+#include <sys/types.h>
 
 #include "reporter.h"
 
 using namespace std;
 
+
+/*
+ * name:    sigint_handler
+ * purpose: handle the SIGINT signal
+ * receive: none
+ * return:  none
+ */
+void sigint_handler(int signo)
+{
+  if (signo == SIGINT)
+  {
+    alarm(0);
+    cout << "sigint signal" << endl;
+    //ask user for confirmation
+    if (confirm_exit())
+    {
+      cout << "Program terminates" << endl;
+      exit (0);
+    }
+    else 
+    {
+      cout << "Program continues" << endl;
+      alarm(interval);
+    }
+  }
+}
+
+/*
+ * name:    sigusr1_handler
+ * purpose: handle the SIGUSR1 signal
+ * receive: none
+ * return:  none
+ */
+void sigusr1_handler(int signo)
+{
+  if (signo == SIGUSR1)
+  {
+    alarm(0);
+    cout << "sigusr1 has been called" <<endl;
+    interval = interval / 2;
+    if (interval >=  1){
+      alarm(interval);
+    }
+   else{
+      ualarm(interval * 1000000, 0);
+    }
+   print_mem_report();
+  
+  }
+}
+
+/*
+ * name:    sigusr2_handler
+ * purpose: handle the SIGUSR2 signal
+ * receive: none
+ * return:  none
+ */
+void sigusr2_handler(int signo)
+{
+  if (signo == SIGUSR2)
+  {
+    alarm(0);
+    cout << "sigusr2 has been called" << endl;
+    interval = interval * 2;
+     if (interval >=  1){
+
+      alarm(interval);
+    }
+   else{
+      ualarm(interval * 1000000, 0);
+    }
+   print_mem_report();
+  }
+  
+}
+
+/*
+ * name:    sigusr2_handler
+ * purpose: handle the SIGUSR2 signal
+ * receive: none
+ * return:  none
+ */
+void alarm_handler(int signo)
+{
+  if (signo == SIGALRM)
+  {
+    cout << interval << endl;
+    cout << "sigalarm really just got called" << endl;
+    cout << "sigalarm has been called" << endl;
+    print_mem_report();
+    cout << "yeah it got called" << endl;
+    if (interval >=  1){
+      alarm(interval);
+      cout << "second alarm called" << endl;
+    }
+   else{
+      ualarm(interval * 1000000, 0);
+    }
+  }
+  
+}
 
 int main(int argc, char** argv) {
   interval = 1; // in seconds
@@ -25,6 +130,7 @@ int main(int argc, char** argv) {
 
   struct sigaction sa;
   sa.sa_handler = alarm_handler;
+
 
   if (sigaction(SIGALRM, &sa, NULL) == -1)
   {
@@ -44,19 +150,16 @@ int main(int argc, char** argv) {
     exit(EXIT_FAILURE);
   }
 
-//  alarm(2);
-  while (1){
-    if (interval >=  1){
+  signal(SIGINT, sigint_handler);
+   if (interval >=  1){
 
       alarm(interval);
     }
    else{
       ualarm(interval * 1000000, 0);
     }
-    print_mem_report();
-    sleep (1);
-  
-  }
 
+   while(1){
+     sleep(3);
+   }
 }
-
