@@ -25,7 +25,6 @@ void sigint_handler(int signo)
   if (signo == SIGINT)
   {
     alarm(0);
-    cout << "sigint signal" << endl;
     //ask user for confirmation
     if (confirm_exit())
     {
@@ -51,7 +50,6 @@ void sigusr1_handler(int signo)
   if (signo == SIGUSR1)
   {
     alarm(0);
-    cout << "sigusr1 has been called" <<endl;
     interval = interval / 2;
     if (interval >=  1){
       alarm(interval);
@@ -75,7 +73,6 @@ void sigusr2_handler(int signo)
   if (signo == SIGUSR2)
   {
     alarm(0);
-    cout << "sigusr2 has been called" << endl;
     interval = interval * 2;
      if (interval >=  1){
 
@@ -99,14 +96,9 @@ void alarm_handler(int signo)
 {
   if (signo == SIGALRM)
   {
-    cout << interval << endl;
-    cout << "sigalarm really just got called" << endl;
-    cout << "sigalarm has been called" << endl;
     print_mem_report();
-    cout << "yeah it got called" << endl;
     if (interval >=  1){
       alarm(interval);
-      cout << "second alarm called" << endl;
     }
    else{
       ualarm(interval * 1000000, 0);
